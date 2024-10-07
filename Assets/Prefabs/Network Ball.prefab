@@ -203,5 +203,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f836fdcd4e9b5f48b84eefe8a325f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  speed: 5
   startPosition: {x: 0, y: 0, z: 0}

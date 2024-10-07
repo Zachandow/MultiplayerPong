@@ -50,17 +50,21 @@ public class NetworkGameManager : NetworkBehaviour
     // Change the Network Variable score for a specific player
     public void PlayerScored(int playerNumber)
     {
+        if (!IsServer) return;
+
         if (playerNumber <= 1)
         {
             playerOneScore.Value++;
+            Debug.Log($"Player 1 scored! Current Score: {playerOneScore.Value}");
         }
         else if (playerNumber >= 2)
         {
             playerTwoScore.Value++;
+            Debug.Log($"Player 2 scored! Current Score: {playerTwoScore.Value}");
         }
     }
 
-
+    private bool hasHostSpawed = false;
     public void NewPlayerConnected(ulong playerID)
     {
         currentNumberOfPlayers++;
@@ -68,7 +72,7 @@ public class NetworkGameManager : NetworkBehaviour
         if (IsServer)
         {
             // If we have one player
-            if (currentNumberOfPlayers == 1)
+            if (currentNumberOfPlayers == 1 && !hasHostSpawed)
             {
                 // Reset score
                 playerOneScore.Value = 0;
@@ -79,6 +83,9 @@ public class NetworkGameManager : NetworkBehaviour
                 newPaddle.UpdateStartPosition(playerStartPositions[0]);
                 newPaddle.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
                 playerPaddles[0] = newPaddle;
+
+                Debug.Log($"Player {playerID} joined as Player 1.");
+                hasHostSpawed = true;
             }
             // If we have two players
             else if (currentNumberOfPlayers == MIN_PLAYERS_REQUIRED)
@@ -96,6 +103,7 @@ public class NetworkGameManager : NetworkBehaviour
                 newPaddle.GetComponent<NetworkObject>().SpawnAsPlayerObject(playerID);
                 playerPaddles[playerIndex] = newPaddle;
 
+                Debug.Log($"Player {playerID} joined as Player 2.");
                 // Reset everything and launch the ball.
                 ResetAndLaunchBall(true);
             }
@@ -104,6 +112,7 @@ public class NetworkGameManager : NetworkBehaviour
             //       code is doing before changing MIN_PLAYERS_REQUIRED.
         }
     }
+
 
 
     public void PlayerDisconnected(ulong playerID)
