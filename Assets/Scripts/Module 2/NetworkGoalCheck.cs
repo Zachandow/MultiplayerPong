@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GoalTrigger : MonoBehaviour
+public class NetworkGoalCheck : MonoBehaviour
 {
-    public GameManager gameManager;  // Reference to the GameManager
+    public NetworkGameManager networkGameManager;  // Reference to the NetworkGameManager
 
     public enum GoalType { Player1Goal, Player2Goal }
     public GoalType goalType;
@@ -13,20 +13,20 @@ public class GoalTrigger : MonoBehaviour
     {
         if (other.GetComponent<BallController>() != null || other.GetComponent<NetworkBall>() != null)
         {
-
+            // Invoke any listeners for goal scoring
             OnGoalTouch.Invoke();
+
+            // Call the NetworkGameManager to update scores
             if (goalType == GoalType.Player1Goal)
             {
                 // Player 2 scores
-                gameManager.PlayerScorePoint(false);
+                networkGameManager.PlayerScored(2); // Assuming Player 2 scores
             }
             else if (goalType == GoalType.Player2Goal)
             {
                 // Player 1 scores
-                gameManager.PlayerScorePoint(true);
+                networkGameManager.PlayerScored(1); // Assuming Player 1 scores
             }
         }
     }
 }
-
-
