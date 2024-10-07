@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PaddleController : MonoBehaviour
@@ -30,5 +31,10 @@ public class PaddleController : MonoBehaviour
     {
         Vector2 moveVectorDir = new Vector2(0, movementDirection * speed * Time.deltaTime);
         rb.MovePosition(rb.position + moveVectorDir);
+    }
+
+    public void UpdateMovement(InputAction.CallbackContext context)
+    {
+        movementDirection = context.ReadValue<float>();
     }
 }

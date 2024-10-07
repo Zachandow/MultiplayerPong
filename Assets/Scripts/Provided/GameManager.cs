@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] BallController[] balls = new BallController[0];
     [SerializeField] PaddleController[] paddles = new PaddleController[0];
 
+    [SerializeField] TextUpdater player1ScoreText;  // Assign in Inspector
+    [SerializeField] TextUpdater player2ScoreText;  // Assign in Inspector
+
     [SerializeField] bool useFirstGetToScoreGoal = false;
     [SerializeField] int scoreToReach = 10;
     [SerializeField] bool useTimerLimit = false;
@@ -32,8 +35,12 @@ public class GameManager : MonoBehaviour
         {
             paddles = FindObjectsOfType<PaddleController>();
         }
+
+        // Subscribe to score update events
+        OnPlayerOneScore.AddListener(player1ScoreText.ShowInt);
+        OnPlayerTwoScore.AddListener(player2ScoreText.ShowInt);
+
         Reset();
-        // Launch ball in random direction
         LaunchAll(Random.Range(0, 2) == 1);
     }
 
@@ -69,11 +76,13 @@ public class GameManager : MonoBehaviour
         if (isPlayerOne)
         {
             player1Score += 1;
+            Debug.Log("Player 1 Score Updated: " + player1Score);
             OnPlayerOneScore.Invoke(player1Score);
         }
         else
         {
             player2Score += 1;
+            Debug.Log("Player 2 Score Updated: " + player2Score);
             OnPlayerTwoScore.Invoke(player2Score);
         }
 
@@ -108,13 +117,11 @@ public class GameManager : MonoBehaviour
         {
             OnGameFinished.Invoke(PlayerWin.Player_2);
         }
-        else if (player1Score == player2Score)
+        else
         {
             OnGameFinished.Invoke(PlayerWin.Tie);
         }
-
     }
-
 }
 
 public enum PlayerWin
@@ -123,4 +130,3 @@ public enum PlayerWin
     Player_2,
     Tie,
 }
-
